@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Igalia, S.L.
+ * Copyright 2019-2022 Igalia, S.L.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 import Mustache from 'mustache';
 import { load as load_template } from './templates';
-import { afmMain, api, homescreen } from 'agl-js-api';
 
 var configjson = require('../config.json');
 var template;
@@ -29,20 +28,23 @@ function render() {
 }
 
 function load_application_list() {
-    afmMain.runnables().then(function(apps) {
+    navigator.appService.getApplications(true, apps => {
         page.apps = [];
 
         for( var i=0; i<apps.length; i++) { 
-            if( configjson.black_list.indexOf(apps[i].id) === -1 ) {
+            if( configjson.black_list.indexOf(apps[i][0]) === -1 ) {
                 (function(app) {
-                    if( configjson.icons[app.id.split('@')[0]] ) {
-                        app.icon = configjson.icons[app.id.split('@')[0]];
+                    let app_entry = {};
+                    app_entry.id = app[0];
+                    app_entry.name = app[1];
+                    if( configjson.icons[app_entry.id.split('@')[0]] ) {
+                        app_entry.icon = configjson.icons[app_entry.id.split('@')[0]];
                     } else {
-                        app.icon = undefined;
-                        app.letter = app.name[0];
+                        app_entry.icon = undefined;
+                        app_entry.letter = app[1][0];
                     }
 
-                    page.apps.push(app);
+                    page.apps.push(app_entry);
                 })(apps[i]);
             }
         }
@@ -53,13 +55,10 @@ function load_application_list() {
 
 export function launch(appId) {
     console.log(appId);
-    homescreen.showWindow(appId.split('@')[0]).then(function(result) {
-        log("success: " + result);
-    });
+    navigator.appService.start(appId.split('@')[0]);
 }
 
 export function init() {
-    api.init();
     load_template('apps.template.html').then(function(result) {
         template = result;
         Mustache.parse(template);

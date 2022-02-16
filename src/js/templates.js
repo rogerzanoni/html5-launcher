@@ -2,12 +2,12 @@ export function load(template) {
     return new Promise(function(resolve, reject){
         var xhr = new XMLHttpRequest();
 
-        xhr.open('GET', '/templates/'+template);
+        xhr.open('GET', './templates/'+template);
     
         xhr.send();
     
         xhr.onload = function() {
-            if (xhr.status != 200) {
+            if (xhr.status != 200 && xhr.status != 0) {
                 console.error('Error loading template', xhr.status, xhr.statusText);
                 reject(xhr.status);
             } else {

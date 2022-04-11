@@ -1,0 +1,12 @@
+{
+  "id": "launcher",
+  "title": "HTML5 Launcher",
+  "description": "Launcher application for AGL based on html5 technologies",
+  "version": "1.0.0",
+  "vendor": "Igalia, S.L.",
+  "type": "web",
+  "main": "index.html",
+  "uiRevision": "2",
+  "icon": "icon.svg",
+  "extensions": [ "agl_appservice" ]
+}

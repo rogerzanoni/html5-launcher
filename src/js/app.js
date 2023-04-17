@@ -32,16 +32,16 @@ function load_application_list() {
         page.apps = [];
 
         for( var i=0; i<apps.length; i++) { 
-            if( configjson.black_list.indexOf(apps[i][0]) === -1 ) {
+            if( configjson.black_list.indexOf(apps[i].id) === -1 ) {
                 (function(app) {
                     let app_entry = {};
-                    app_entry.id = app[0];
-                    app_entry.name = app[1];
-                    if( configjson.icons[app_entry.id.split('@')[0]] ) {
-                        app_entry.icon = configjson.icons[app_entry.id.split('@')[0]];
+                    app_entry.id = app.id;
+                    app_entry.name = app.name;
+                    if( configjson.icons[app_entry.id] ) {
+                        app_entry.icon = configjson.icons[app_entry.id];
                     } else {
                         app_entry.icon = undefined;
-                        app_entry.letter = app[1][0];
+                        app_entry.letter = app.name[0];
                     }
 
                     page.apps.push(app_entry);
@@ -55,7 +55,7 @@ function load_application_list() {
 
 export function launch(appId) {
     console.log(appId);
-    navigator.appService.start(appId.split('@')[0]);
+    navigator.appService.start(appId);
 }
 
 export function init() {
